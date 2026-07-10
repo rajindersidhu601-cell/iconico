@@ -46,7 +46,7 @@
   .header-cta:hover{background:#fff;color:#000;}
 
   /* ---------- FRAME HERO ---------- */
-  .fhero{position:relative;height:100vh;overflow:hidden;background:var(--bone);}
+  .fhero{position:relative;height:100svh;overflow:hidden;background:var(--bone);}
   .fhero-type{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1;}
   .fhero-type .t{font-family:var(--serif);font-weight:270;font-size:clamp(3rem,10.5vw,9.6rem);line-height:1.02;
     letter-spacing:-.01em;color:var(--ink);white-space:nowrap;}
@@ -80,7 +80,7 @@
 
   /* ---------- horizontal gallery ---------- */
   .hwrap{position:relative;background:var(--bone);}
-  .hpin{height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;}
+  .hpin{height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;}
   .hhead{padding:0 clamp(1.2rem,4vw,3rem);margin-bottom:2.4rem;display:flex;justify-content:space-between;align-items:baseline;}
   .hhead h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,5vw,4.2rem);}
   .hhead .index{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);}
@@ -93,7 +93,7 @@
   .hcard .caption b{font-weight:600;color:var(--ink);}
 
   /* ---------- ARCH REVEAL ---------- */
-  .arch{position:relative;height:100vh;overflow:hidden;background:var(--charcoal);display:grid;place-items:center;}
+  .arch{position:relative;height:100svh;overflow:hidden;background:var(--charcoal);display:grid;place-items:center;}
   .arch-clip{position:relative;width:100%;height:100%;display:grid;place-items:center;}
   .arch-media{width:100%;height:100%;overflow:hidden;will-change:clip-path;
     clip-path:inset(18% 34% 12% 34% round 42vw 42vw 0 0);}
@@ -306,6 +306,17 @@
 <script>
 gsap.registerPlugin(ScrollTrigger);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* touch devices: serve small originals and force muted-loop playback (iOS-safe) */
+const touch = matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+if(touch){
+  const hv = document.getElementById("fhero-video");
+  const av = document.getElementById("arch-video");
+  hv.src = "assets/video/reel-02.mp4";
+  av.src = "assets/video/reel-10.mp4";
+  [hv, av].forEach(v => { v.loop = true; v.muted = true; });
+  hv.play().catch(()=>{});
+  document.addEventListener("touchstart", () => { hv.play().catch(()=>{}); }, { once: true, passive: true });
+}
 
 if(!reduced){
   const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
